@@ -16,8 +16,6 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "com.yourCompany.MooltipassXCODEProject.Extension"
-
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
     @IBOutlet var webView: WKWebView!
@@ -41,8 +39,8 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
         webView.evaluateJavaScript("show('ios')")
 #elseif os(macOS)
         webView.evaluateJavaScript("show('mac')")
-
-        SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
+        
+        SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier()) { (state, error) in
             guard let state = state, error == nil else {
                 // Insert code to inform the user that something went wrong.
                 return
@@ -61,7 +59,7 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             return;
         }
 
-        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
+        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier()) { error in
             guard error == nil else {
                 // Insert code to inform the user that something went wrong.
                 return
@@ -72,6 +70,18 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             }
         }
 #endif
+    }
+    
+    func extensionBundleIdentifier() -> String
+    {
+        var extensionBundleIdentifier = "com.stephan-electronics.Mooltipass-Extension.Extension"
+
+        if let identifier = Bundle.main.bundleIdentifier
+        {
+            extensionBundleIdentifier = "\(identifier).Extension"
+        }
+        
+        return extensionBundleIdentifier
     }
 
 }
